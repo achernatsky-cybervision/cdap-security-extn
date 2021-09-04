@@ -20,10 +20,6 @@ package io.cdap.cdap.security.authorization.ldap.role;
  * Constants for {@link RoleAuthorization} class
  */
 public final class RoleAuthorizationConstants {
-  // System user properties names
-  public static final String DEFAULT_SYSTEM_USER = "root";
-  public static final String IGNORE_SYSTEM_USER = "ignoreSystemUser";
-
   // System namespace name
   public static final String SYSTEM_NAMESPACE = "system";
 
@@ -58,4 +54,8 @@ public final class RoleAuthorizationConstants {
 
   // Disable permissions propagation property name
   public static final String DISABLE_PERMISSIONS_PROPAGATION = "disablePermissionsPropagation";
+
+  // Property to set list of users with full access
+  public static final String FULL_ACCESS_USERS = "fullAccessUsers";
+  public static final String USERS_DELIMITER = ";";
 }

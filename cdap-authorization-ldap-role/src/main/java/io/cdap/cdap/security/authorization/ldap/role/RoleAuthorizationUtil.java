@@ -27,6 +27,7 @@ import io.cdap.cdap.security.authorization.ldap.role.searcher.LDAPSearchConfig;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -40,17 +41,6 @@ public class RoleAuthorizationUtil {
     EntityType.SECUREKEY, // Properties with secured information
     EntityType.PROFILE // Allows getting SSH key for Profile
   );
-
-  /**
-   * Gets flag from ignoring system user from configuration
-   *
-   * @param properties {@link Properties} set for extension
-   * @return if system ignore flag
-   */
-  public static boolean getIgnoreSystemUserValue(Properties properties) {
-    String ignoreSystemUserString = properties.getProperty(RoleAuthorizationConstants.IGNORE_SYSTEM_USER);
-    return Boolean.parseBoolean(ignoreSystemUserString);
-  }
 
   /**
    * Gets flag for disabling extension and only logging from configuration
@@ -73,6 +63,23 @@ public class RoleAuthorizationUtil {
     String disablePermissionsPropagationString = properties.getProperty(RoleAuthorizationConstants
                                                                           .DISABLE_PERMISSIONS_PROPAGATION);
     return Boolean.parseBoolean(disablePermissionsPropagationString);
+  }
+
+  /**
+   * Gets set of users with full access
+   *
+   * @param properties {@link Properties} set for extension
+   * @return set of users with full access
+   */
+  public static Set<String> getFullAccessUsers(Properties properties) {
+    String fullAccessUsersString = properties.getProperty(RoleAuthorizationConstants.FULL_ACCESS_USERS);
+
+    if (fullAccessUsersString == null) {
+      return Collections.emptySet();
+    }
+
+    String[] usersArray = fullAccessUsersString.split(RoleAuthorizationConstants.USERS_DELIMITER);
+    return new HashSet<>(Arrays.asList(usersArray));
   }
 
   /**
