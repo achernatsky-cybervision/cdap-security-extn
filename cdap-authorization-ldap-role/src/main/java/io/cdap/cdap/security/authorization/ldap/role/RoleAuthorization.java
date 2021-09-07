@@ -33,11 +33,9 @@ import io.cdap.cdap.security.authorization.ldap.role.searcher.LDAPSearcher;
 import io.cdap.cdap.security.spi.authorization.AccessController;
 import io.cdap.cdap.security.spi.authorization.AuthorizationContext;
 import io.cdap.cdap.security.spi.authorization.UnauthorizedException;
-import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
@@ -52,42 +50,35 @@ import java.util.stream.Collectors;
 public class RoleAuthorization implements AccessController {
   private static final Logger LOG = LoggerFactory.getLogger(RoleAuthorization.class);
 
-  // Is necessary for scheduled tasks
-  private static final String EMPTY_USER = "";
-
   private LDAPSearcher searcherService;
   private GroupWithRolesProvider roleProvider;
 
-  private boolean ignoreSystemUser;
+  private boolean ignoreFullAccessUsers;
   private boolean loggingOnly;
   private boolean disablePermissionsPropagation;
 
-  private String systemUsername;
-
   public RoleAuthorization() {
-    systemUsername = RoleAuthorizationConstants.DEFAULT_SYSTEM_USER;
   }
 
   @Override
   public void initialize(AuthorizationContext context) {
     Properties properties = context.getExtensionProperties();
-    ignoreSystemUser = RoleAuthorizationUtil.getIgnoreSystemUserValue(properties);
+    ignoreFullAccessUsers = RoleAuthorizationUtil.getIgnoreFullAccessUsersValue(properties);
     loggingOnly = RoleAuthorizationUtil.getLoggingOnlyValue(properties);
     disablePermissionsPropagation = RoleAuthorizationUtil.getDisablePermissionsPropagationValue(properties);
 
     LOG.info("Permission propagation is: '{}'", !disablePermissionsPropagation);
 
-    setSystemUser();
+    roleProvider = RoleAuthorizationUtil.createLDAPGroupRoleProvider(properties);
 
     if (loggingOnly) {
       return;
     }
 
+    roleProvider.start();
+
     searcherService = createLDAPSearcher(context);
     searcherService.testConnection();
-
-    roleProvider = RoleAuthorizationUtil.createLDAPGroupRoleProvider(properties);
-    roleProvider.start();
   }
 
   @Override
@@ -103,8 +94,8 @@ public class RoleAuthorization implements AccessController {
     String username = principal.getName();
     LOG.debug("enforce user: '{}' entity: '{}' permissions: '{}'", username, entity, permissions);
 
-    // If we are not system user or blank user for running scheduled pipelines
-    if ((username.equals(systemUsername) && !ignoreSystemUser) || loggingOnly || username.equals(EMPTY_USER)) {
+    // If we are not user with full access
+    if ((roleProvider.isUserWithFullAccess(username) && !ignoreFullAccessUsers) || loggingOnly) {
       return;
     }
 
@@ -135,8 +126,8 @@ public class RoleAuthorization implements AccessController {
     LOG.debug("enforceOnParent user: '{}' type: '{}' parent: '{}' permissions: '{}'", username, entityType, parentId,
               permission);
 
-    // If we are not system user or blank user for running scheduled pipelines
-    if ((username.equals(systemUsername) && !ignoreSystemUser) || loggingOnly) {
+    // If we are not user with full access
+    if ((roleProvider.isUserWithFullAccess(username) && !ignoreFullAccessUsers) || loggingOnly) {
       return;
     }
 
@@ -161,8 +152,8 @@ public class RoleAuthorization implements AccessController {
 
     LOG.debug("isVisible user: '{}' entity: '{}' ", username, entityIds);
 
-    // If we are not system user or blank user for running scheduled pipelines
-    if ((username.equals(systemUsername) && !ignoreSystemUser) || loggingOnly) {
+    // If we are not user with full access
+    if ((roleProvider.isUserWithFullAccess(username) && !ignoreFullAccessUsers) || loggingOnly) {
       return entityIds;
     }
 
@@ -228,19 +219,6 @@ public class RoleAuthorization implements AccessController {
   PrincipalPermissions getAllPermissions(String username) {
     Set<String> groups = searcherService.searchGroups(username);
     return roleProvider.getPrincipalPermissions(groups);
-  }
-
-  private void setSystemUser() {
-    if (!ignoreSystemUser) {
-      try {
-        UserGroupInformation info = UserGroupInformation.getCurrentUser();
-        systemUsername = info.getShortUserName();
-        LOG.info("System user: {}", systemUsername);
-      } catch (IOException e) {
-        ignoreSystemUser = true;
-        LOG.error("Failed to set systemUser, it will be ignored", e);
-      }
-    }
   }
 
   private LDAPSearcher createLDAPSearcher(AuthorizationContext context) {

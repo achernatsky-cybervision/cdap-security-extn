@@ -20,10 +20,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import io.cdap.cdap.security.authorization.ldap.role.permission.RolePermission;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,17 +35,23 @@ import java.util.stream.Collectors;
  */
 public class RoleWithGroupsMappingConfig {
   private Map<String, Role> roles;
+
   @JsonProperty("mappings")
   private Map<String, GroupWithRoles> roleMapping;
+
+  private Set<String> fullAccessUsers;
 
   public RoleWithGroupsMappingConfig() {
     roles = new HashMap<>();
     roleMapping = new HashMap<>();
+    fullAccessUsers = Collections.emptySet();
   }
 
-  public RoleWithGroupsMappingConfig(Map<String, Role> roles, Map<String, GroupWithRoles> roleMapping) {
+  public RoleWithGroupsMappingConfig(Map<String, Role> roles, Map<String, GroupWithRoles> roleMapping,
+                                     Set<String> fullAccessUsers) {
     this.roles = roles;
     this.roleMapping = roleMapping;
+    this.fullAccessUsers = fullAccessUsers;
   }
 
   public Map<String, Role> getRoles() {
@@ -51,6 +60,10 @@ public class RoleWithGroupsMappingConfig {
 
   public Map<String, GroupWithRoles> getRoleMapping() {
     return roleMapping;
+  }
+
+  public Set<String> getFullAccessUsers() {
+    return fullAccessUsers;
   }
 
   public void setRoles(Map<String, Role> roles) {
@@ -71,6 +84,10 @@ public class RoleWithGroupsMappingConfig {
   public void setRoleMapping(List<GroupWithRoles> roleMapping) {
     this.roleMapping = roleMapping.stream()
       .collect(Collectors.toMap(GroupWithRoles::getGroup, Function.identity()));
+  }
+
+  public void setFullAccessUsers(Set<String> fullAccessUsers) {
+    this.fullAccessUsers = new HashSet<>(fullAccessUsers);
   }
 
   public boolean isEmpty() {

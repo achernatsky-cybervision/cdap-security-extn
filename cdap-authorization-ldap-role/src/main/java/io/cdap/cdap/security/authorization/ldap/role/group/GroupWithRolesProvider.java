@@ -134,6 +134,18 @@ public class GroupWithRolesProvider {
       .contains(entityType);
   }
 
+  /**
+   * Checks if user has full access
+   *
+   * @param username Name of user
+   * @return If user has full access
+   */
+  public boolean isUserWithFullAccess(String username) {
+    return referenceToMappingConfig.get()
+      .getFullAccessUsers()
+      .contains(username);
+  }
+
   private void updateRoleMapping() {
     LOG.debug("Updating permissions from: {}", path);
 

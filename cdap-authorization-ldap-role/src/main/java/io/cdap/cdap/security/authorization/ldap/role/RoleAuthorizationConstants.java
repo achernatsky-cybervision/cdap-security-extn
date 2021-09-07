@@ -20,9 +20,8 @@ package io.cdap.cdap.security.authorization.ldap.role;
  * Constants for {@link RoleAuthorization} class
  */
 public final class RoleAuthorizationConstants {
-  // System user properties names
-  public static final String DEFAULT_SYSTEM_USER = "root";
-  public static final String IGNORE_SYSTEM_USER = "ignoreSystemUser";
+  // Property to ignore users with full access
+  public static final String IGNORE_FULL_ACCESS_USERS = "ignoreFullAccessUsers";
 
   // System namespace name
   public static final String SYSTEM_NAMESPACE = "system";

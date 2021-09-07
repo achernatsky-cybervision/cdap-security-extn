@@ -42,14 +42,14 @@ public class RoleAuthorizationUtil {
   );
 
   /**
-   * Gets flag from ignoring system user from configuration
+   * Gets flag for ignoring full access users from configuration
    *
    * @param properties {@link Properties} set for extension
-   * @return if system ignore flag
+   * @return if users with full access should be ignored
    */
-  public static boolean getIgnoreSystemUserValue(Properties properties) {
-    String ignoreSystemUserString = properties.getProperty(RoleAuthorizationConstants.IGNORE_SYSTEM_USER);
-    return Boolean.parseBoolean(ignoreSystemUserString);
+  public static boolean getIgnoreFullAccessUsersValue(Properties properties) {
+    String ignoreFullAccessUsersString = properties.getProperty(RoleAuthorizationConstants.IGNORE_FULL_ACCESS_USERS);
+    return Boolean.parseBoolean(ignoreFullAccessUsersString);
   }
 
   /**
