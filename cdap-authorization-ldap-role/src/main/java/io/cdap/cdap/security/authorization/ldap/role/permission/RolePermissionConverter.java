@@ -21,6 +21,7 @@ import io.cdap.cdap.proto.security.ApplicationPermission;
 import io.cdap.cdap.proto.security.Permission;
 import io.cdap.cdap.proto.security.StandardPermission;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,13 +63,20 @@ public class RolePermissionConverter {
       .filter(EntityTypeWithPermission::isSystemNamespace)
       .collect(Collectors.toSet());
 
-    result.put(SYSTEM_NAMESPACE, systemPrincipalPermissions);
+    // Setting permissions for system namespace and removing it from list of all namespaces if necessary
+    List<String> nonSystemNamespaces = new ArrayList<>(namespaces);
+    if (namespaces.contains(SYSTEM_NAMESPACE)) {
+      nonSystemNamespaces.remove(SYSTEM_NAMESPACE);
+      result.put(SYSTEM_NAMESPACE, principalPermissions);
+    } else {
+      result.put(SYSTEM_NAMESPACE, systemPrincipalPermissions);
+    }
 
     // Filtering permissions for non system namespace
     Set<EntityTypeWithPermission> nonSystemPrincipalPermission = new HashSet<>(principalPermissions);
     nonSystemPrincipalPermission.removeAll(systemPrincipalPermissions);
 
-    namespaces.forEach(namespace -> result.put(namespace, nonSystemPrincipalPermission));
+    nonSystemNamespaces.forEach(namespace -> result.put(namespace, nonSystemPrincipalPermission));
 
     return result;
   }
@@ -76,7 +84,7 @@ public class RolePermissionConverter {
   /**
    * Converts {@link RolePermission} to list of {@link EntityTypeWithPermission}
    *
-   * @param permission @link RolePermission}
+   * @param permission {@link RolePermission}
    * @return List of {@link EntityTypeWithPermission}
    */
   public static List<EntityTypeWithPermission> convertToEntityTypeWithPermission(RolePermission permission) {
