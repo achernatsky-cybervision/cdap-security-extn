@@ -90,6 +90,16 @@ public class RolePermissionConverter {
   public static List<EntityTypeWithPermission> convertToEntityTypeWithPermission(RolePermission permission) {
     // Handling custom set of permissions
     switch (permission) {
+      case CREATE_PIPELINE:
+        return Arrays.asList(
+          new EntityTypeWithPermission(EntityType.APPLICATION, StandardPermission.CREATE),
+          new EntityTypeWithPermission(EntityType.DATASET, StandardPermission.CREATE)
+        );
+      case DELETE_PIPELINE:
+        return Arrays.asList(
+          new EntityTypeWithPermission(EntityType.APPLICATION, StandardPermission.DELETE),
+          new EntityTypeWithPermission(EntityType.DATASET, StandardPermission.DELETE)
+        );
       case VIEW_PIPELINE:
         return Arrays.asList(
           new EntityTypeWithPermission(EntityType.PROGRAM, StandardPermission.GET),
@@ -117,7 +127,9 @@ public class RolePermissionConverter {
       case DEPLOY_ARTIFACTS:
         return Arrays.asList(
           new EntityTypeWithPermission(EntityType.APPLICATION, StandardPermission.CREATE),
-          new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.UPDATE)
+          new EntityTypeWithPermission(EntityType.APPLICATION, StandardPermission.DELETE),
+          new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.UPDATE),
+          new EntityTypeWithPermission(EntityType.DATASET, StandardPermission.CREATE)
         );
       case USE_WRANGLER:
         return Arrays.asList(
