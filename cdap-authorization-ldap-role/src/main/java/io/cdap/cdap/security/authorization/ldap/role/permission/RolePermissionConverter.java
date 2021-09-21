@@ -110,7 +110,8 @@ public class RolePermissionConverter {
       case VIEW_NAMESPACE:
         return Arrays.asList(
           new EntityTypeWithPermission(EntityType.NAMESPACE, StandardPermission.GET),
-          new EntityTypeWithPermission(EntityType.NAMESPACE, StandardPermission.LIST)
+          new EntityTypeWithPermission(EntityType.NAMESPACE, StandardPermission.LIST),
+          new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.LIST)
         );
       case MANAGE_SYSTEM_PREFERENCES:
         return Arrays.asList(
