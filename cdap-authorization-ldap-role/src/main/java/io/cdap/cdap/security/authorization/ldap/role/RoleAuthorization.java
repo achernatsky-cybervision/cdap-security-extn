@@ -36,12 +36,17 @@ import io.cdap.cdap.security.spi.authorization.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 /**
@@ -62,6 +67,7 @@ public class RoleAuthorization implements AccessController {
 
   @Override
   public void initialize(AuthorizationContext context) {
+    printExtensionInfo();
     Properties properties = context.getExtensionProperties();
     ignoreFullAccessUsers = RoleAuthorizationUtil.getIgnoreFullAccessUsersValue(properties);
     loggingOnly = RoleAuthorizationUtil.getLoggingOnlyValue(properties);
@@ -265,6 +271,26 @@ public class RoleAuthorization implements AccessController {
       return principalPermissions
         .getPermission(entityType, entityId, permission)
         .isPresent();
+    }
+  }
+
+  private void printExtensionInfo() {
+    URLClassLoader classLoader = (URLClassLoader) getClass().getClassLoader();
+    try {
+      URL url = classLoader.findResource(RoleAuthorizationConstants.MANIFEST_PATH);
+      Manifest manifest = new Manifest(url.openStream());
+      Attributes attr = manifest.getMainAttributes();
+
+      String title = attr.getValue(RoleAuthorizationConstants.MANIFEST_TITLE_NAME);
+      LOG.info("Extension: {}", title);
+
+      String version = attr.getValue(RoleAuthorizationConstants.MANIFEST_VERSION_NAME);
+      LOG.info("Version: {}", version);
+
+      String buildTime = attr.getValue(RoleAuthorizationConstants.MANIFEST_BUILD_TIME_NAME);
+      LOG.info("Build-Time: {}", buildTime);
+    } catch (IOException e) {
+      LOG.error("Failed to get extension information from Manifest", e);
     }
   }
 }

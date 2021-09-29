@@ -57,4 +57,10 @@ public final class RoleAuthorizationConstants {
 
   // Disable permissions propagation property name
   public static final String DISABLE_PERMISSIONS_PROPAGATION = "disablePermissionsPropagation";
+
+  // Constants for start extension info
+  public static final String MANIFEST_PATH = "META-INF/MANIFEST.MF";
+  public static final String MANIFEST_TITLE_NAME = "Specification-Title";
+  public static final String MANIFEST_VERSION_NAME = "Specification-Version";
+  public static final String MANIFEST_BUILD_TIME_NAME = "Build-Time";
 }
