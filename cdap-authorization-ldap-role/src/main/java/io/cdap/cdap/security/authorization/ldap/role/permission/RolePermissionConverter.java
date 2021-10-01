@@ -93,7 +93,9 @@ public class RolePermissionConverter {
       case CREATE_PIPELINE:
         return Arrays.asList(
           new EntityTypeWithPermission(EntityType.APPLICATION, StandardPermission.CREATE),
-          new EntityTypeWithPermission(EntityType.DATASET, StandardPermission.CREATE)
+          new EntityTypeWithPermission(EntityType.DATASET, StandardPermission.CREATE),
+          new EntityTypeWithPermission(EntityType.APPLICATION, StandardPermission.GET),
+          new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.GET)
         );
       case DELETE_PIPELINE:
         return Arrays.asList(
@@ -130,7 +132,11 @@ public class RolePermissionConverter {
         return Arrays.asList(
           new EntityTypeWithPermission(EntityType.APPLICATION, StandardPermission.CREATE),
           new EntityTypeWithPermission(EntityType.APPLICATION, StandardPermission.DELETE),
+          new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.CREATE),
+          new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.GET),
+          new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.LIST),
           new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.UPDATE),
+          new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.DELETE),
           new EntityTypeWithPermission(EntityType.DATASET, StandardPermission.CREATE)
         );
       case USE_WRANGLER:
