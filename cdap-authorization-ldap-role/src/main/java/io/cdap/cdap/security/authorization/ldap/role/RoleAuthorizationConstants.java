@@ -63,4 +63,5 @@ public final class RoleAuthorizationConstants {
   public static final String MANIFEST_TITLE_NAME = "Specification-Title";
   public static final String MANIFEST_VERSION_NAME = "Specification-Version";
   public static final String MANIFEST_BUILD_TIME_NAME = "Build-Time";
+  public static final String MANIFEST_BUILD_COMMIT_HASH_NAME = "Build-Commit-Hash";
 }

@@ -287,6 +287,9 @@ public class RoleAuthorization implements AccessController {
       String version = attr.getValue(RoleAuthorizationConstants.MANIFEST_VERSION_NAME);
       LOG.info("Version: {}", version);
 
+      String commitHash = attr.getValue(RoleAuthorizationConstants.MANIFEST_BUILD_COMMIT_HASH_NAME);
+      LOG.info("Build-Commit-Hash: {}", commitHash);
+
       String buildTime = attr.getValue(RoleAuthorizationConstants.MANIFEST_BUILD_TIME_NAME);
       LOG.info("Build-Time: {}", buildTime);
     } catch (IOException e) {
