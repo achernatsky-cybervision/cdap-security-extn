@@ -119,7 +119,7 @@ public class RoleAuthorization implements AccessController {
     difference.removeAll(userPermissionsList);
 
     if (!difference.isEmpty()) {
-      LOG.debug("Denied access '{}' to '{}' with permissions: '{}'", principal, entity.toString(), permissions);
+      LOG.warn("Denied access '{}' to '{}' with permissions: '{}'", principal, entity.toString(), permissions);
       throw new UnauthorizedException(principal, difference, entity);
     }
   }
@@ -145,7 +145,7 @@ public class RoleAuthorization implements AccessController {
     boolean isPermissionAllowed = isAccessible(entityType, parentId, permission, principalPermissions);
 
     if (!isPermissionAllowed) {
-      LOG.debug("Denied access '{}' to '{}' on parent '{}' with permissions: '{}'", principal, entityType.toString(),
+      LOG.warn("Denied access '{}' to '{}' on parent '{}' with permissions: '{}'", principal, entityType.toString(),
                 parentId.toString(), permission);
       throw new UnauthorizedException(principal, Collections.singleton(permission), parentId, entityType);
     }
