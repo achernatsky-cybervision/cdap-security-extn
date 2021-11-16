@@ -118,8 +118,8 @@ public class RolePermissionConverter {
         );
       case MANAGE_SYSTEM_PREFERENCES:
         return Arrays.asList(
-          new EntityTypeWithPermission(EntityType.INSTANCE, StandardPermission.GET),
-          new EntityTypeWithPermission(EntityType.INSTANCE, StandardPermission.UPDATE)
+          new EntityTypeWithPermission(EntityType.INSTANCE, StandardPermission.GET, true),
+          new EntityTypeWithPermission(EntityType.INSTANCE, StandardPermission.UPDATE, true)
         );
       case VIEW_COMPUTE_PROFILE:
         return Arrays.asList(
