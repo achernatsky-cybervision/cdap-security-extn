@@ -106,4 +106,6 @@ public enum RolePermission {
   // System Preferences
   @JsonProperty("Manage System Preferences")
   MANAGE_SYSTEM_PREFERENCES,
+  @JsonProperty("View System Services")
+  VIEW_SYSTEM_SERVICES,
 }

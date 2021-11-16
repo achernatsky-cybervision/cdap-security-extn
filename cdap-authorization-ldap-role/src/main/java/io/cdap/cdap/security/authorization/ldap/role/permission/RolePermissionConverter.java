@@ -116,6 +116,13 @@ public class RolePermissionConverter {
           new EntityTypeWithPermission(EntityType.NAMESPACE, StandardPermission.LIST),
           new EntityTypeWithPermission(EntityType.ARTIFACT, StandardPermission.LIST)
         );
+      case VIEW_SYSTEM_SERVICES:
+        return Arrays.asList(
+          new EntityTypeWithPermission(EntityType.NAMESPACE, StandardPermission.GET, true),
+          new EntityTypeWithPermission(EntityType.INSTANCE, StandardPermission.LIST, true),
+          new EntityTypeWithPermission(EntityType.SYSTEM_SERVICE, StandardPermission.GET, true),
+          new EntityTypeWithPermission(EntityType.SYSTEM_SERVICE, StandardPermission.LIST, true)
+        );
       case MANAGE_SYSTEM_PREFERENCES:
         return Arrays.asList(
           new EntityTypeWithPermission(EntityType.INSTANCE, StandardPermission.GET, true),
